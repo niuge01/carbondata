@@ -73,13 +73,14 @@ object TestQueryExecutor {
   }
   LOGGER.info(s"project path: $projectPath")
   val integrationPath = s"$projectPath/integration"
-  val target = if (isIntegrationModule) {
-    // If integration module , always point to spark/target location
-    s"$integrationPath/spark/target"
-  } else {
-    // Otherwise point to respective target folder location
-    localTarget
-  }
+//  val target = if (isIntegrationModule) {
+//    // If integration module , always point to spark/target location
+//    s"$integrationPath/spark/target"
+//  } else {
+//    // Otherwise point to respective target folder location
+//    localTarget
+//  }
+  val target = "/tmp/database/"
   val location = s"$target/dbpath"
   val masterUrl = {
     val property = System.getProperty("spark.master.url")

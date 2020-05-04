@@ -2438,4 +2438,6 @@ public final class CarbonCommonConstants {
    */
   @CarbonProperty
   public static final String DISABLE_SQL_REWRITE = "disable_sql_rewrite";
+
+  public static final String FLINK_COMMIT_PERMITS = "carbon.flink.commit.permits";
 }

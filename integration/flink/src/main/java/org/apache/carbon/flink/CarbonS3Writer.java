@@ -91,6 +91,7 @@ final class CarbonS3Writer extends CarbonWriter {
     this.writeCommitThreshold =
         commitThreshold == null ? Long.MAX_VALUE : Long.parseLong(commitThreshold);
     this.writeCount = new AtomicLong(0);
+    this.commitSemaphore = CarbonCommitSemaphore.get();
     this.configuration = configuration;
     this.flushed = true;
   }
@@ -102,6 +103,8 @@ final class CarbonS3Writer extends CarbonWriter {
   private final long writeCommitThreshold;
 
   private final AtomicLong writeCount;
+
+  private final CarbonCommitSemaphore commitSemaphore;
 
   private final Configuration configuration;
 
@@ -153,6 +156,19 @@ final class CarbonS3Writer extends CarbonWriter {
 
   @Override
   public void commit() throws IOException {
+    try {
+      this.commitSemaphore.acquire();
+    } catch (InterruptedException ignore) {
+      // Ignore
+    }
+    try {
+      this.commit0();
+    } finally {
+      this.commitSemaphore.release();
+    }
+  }
+
+  private void commit0() throws IOException {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Commit write. " + this.toString());
     }
